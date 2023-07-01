@@ -1,16 +1,17 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import Link from "next/link"
-import { Command } from "lucide-react"
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { Command } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { UserAuthForm } from "@/components/UserAuthForm"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { UserAuthForm } from "@/components/UserAuthForm";
 
 export const metadata: Metadata = {
   title: "Authentication",
-  description: "Authentication forms built using the components.",
-}
+  description:
+    "Authentication forms built using the components.",
+};
 
 export default function AuthenticationPage() {
   return (
@@ -31,7 +32,7 @@ export default function AuthenticationPage() {
           className="hidden dark:block"
         />
       </div>
-      <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <div className="container relative hidden h-[100vh] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           href="/examples/authentication"
           className={cn(
@@ -49,11 +50,14 @@ export default function AuthenticationPage() {
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">
-                &ldquo;This library has saved me countless hours of work and
-                helped me deliver stunning designs to my clients faster than
-                ever before.&rdquo;
+                &ldquo;This library has saved me countless
+                hours of work and helped me deliver stunning
+                designs to my clients faster than ever
+                before.&rdquo;
               </p>
-              <footer className="text-sm">Sofia Davis</footer>
+              <footer className="text-sm">
+                Sofia Davis
+              </footer>
             </blockquote>
           </div>
         </div>
@@ -64,7 +68,8 @@ export default function AuthenticationPage() {
                 Create an account
               </h1>
               <p className="text-sm text-muted-foreground">
-                Enter your email below to create your account
+                Enter your email below to create your
+                account
               </p>
             </div>
             <UserAuthForm />
@@ -89,5 +94,5 @@ export default function AuthenticationPage() {
         </div>
       </div>
     </>
-  )
+  );
 }
