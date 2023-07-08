@@ -1,6 +1,11 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
+
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
+
+import type { Database } from "@/lib/database.types";
 
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
@@ -16,23 +21,43 @@ export function UserAuthForm({
   ...props
 }: UserAuthFormProps) {
   const [isLoading, setIsLoading] =
-    React.useState<boolean>(false);
+    useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] =
+    useState<string>("");
 
-  async function onSubmit(event: React.SyntheticEvent) {
+  const router = useRouter();
+  const supabase = createClientComponentClient<Database>();
+
+  async function handleSignUp(event: React.SyntheticEvent) {
     event.preventDefault();
-    setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    if (password !== confirmPassword) return;
+
+    setIsLoading(true);
+    await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+
+    router.refresh();
+
+    setIsLoading(false);
   }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSignUp}>
         <div className="grid gap-2">
           <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
+            <Label
+              className="mb-1 text-slate-600"
+              htmlFor="email"
+            >
               Email
             </Label>
             <Input
@@ -43,10 +68,14 @@ export function UserAuthForm({
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
+            <Label
+              className="mt-3 mb-1 text-slate-600"
+              htmlFor="email"
+            >
               Password
             </Label>
             <Input
@@ -54,9 +83,26 @@ export function UserAuthForm({
               placeholder="••••••••••••"
               type="password"
               autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
               disabled={isLoading}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="grid gap-1">
+            <Label
+              className="mt-3 mb-1 text-slate-600"
+              htmlFor="email"
+            >
+              Confirm password
+            </Label>
+            <Input
+              id="password"
+              placeholder="••••••••••••"
+              type="password"
+              autoCapitalize="none"
+              disabled={isLoading}
+              onChange={(e) =>
+                setConfirmPassword(e.target.value)
+              }
             />
           </div>
           <Button disabled={isLoading}>
