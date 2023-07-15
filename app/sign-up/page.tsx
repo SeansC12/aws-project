@@ -5,7 +5,7 @@ import { Command } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { UserAuthForm } from "@/components/SignUpUserAuthForm";
+import { SignUpUserForm } from "@/components/SignUpUserAuthForm";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -71,7 +71,7 @@ export default function AuthenticationPage() {
                 account
               </p>
             </div>
-            <UserAuthForm />
+            <SignUpUserForm />
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link

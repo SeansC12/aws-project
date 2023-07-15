@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 interface UserAuthFormProps
   extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({
+export function SignUpUserForm({
   className,
   ...props
 }: UserAuthFormProps) {
