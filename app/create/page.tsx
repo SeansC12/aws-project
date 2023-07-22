@@ -18,7 +18,7 @@ import {
 import { CalendarDateRangePicker } from "@/components/date-range-picker"
 import { MainNav } from "@/components/main-nav"
 import { Overview } from "@/components/overview"
-import { RecentSales } from "@/components/recent-sales"
+import { RecentAcceptedOffers } from "@/components/recent-accepted-offers"
 import { Search } from "@/components/search"
 import TeamSwitcher from "@/components/team-switcher"
 import { UserNav } from "@/components/user-nav"
@@ -184,13 +184,13 @@ export default function DashboardPage() {
                                 </Card>
                                 <Card className="col-span-3">
                                     <CardHeader>
-                                        <CardTitle>Recent Sales</CardTitle>
+                                        <CardTitle>Recent Accepted Offers</CardTitle>
                                         <CardDescription>
                                             You made 265 sales this month.
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <RecentSales />
+                                        <RecentAcceptedOffers />
                                     </CardContent>
                                 </Card>
                             </div>
