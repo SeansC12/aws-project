@@ -84,7 +84,7 @@ export function LoginUserForm({
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Sign Up with Email
+            Log in with Email
           </Button>
         </div>
       </form>
