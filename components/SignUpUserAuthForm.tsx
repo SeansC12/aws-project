@@ -26,9 +26,10 @@ export function SignUpUserForm({
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] =
     useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const router = useRouter();
-  const supabase = createClientComponentClient<Database>();
+  const supabase = createClientComponentClient();
 
   async function handleSignUp(event: React.SyntheticEvent) {
     event.preventDefault();
@@ -36,13 +37,15 @@ export function SignUpUserForm({
     if (password !== confirmPassword) return;
 
     setIsLoading(true);
-    await supabase.auth.signUp({
+    const data = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
     });
+
+    console.log(data);
 
     router.refresh();
 
