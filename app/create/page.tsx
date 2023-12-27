@@ -1,203 +1,160 @@
-import { Metadata } from "next"
-import Image from "next/image"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Metadata } from "next";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-import { CalendarDateRangePicker } from "@/components/date-range-picker"
-import { MainNav } from "@/components/main-nav"
-import { Overview } from "@/components/overview"
-import { RecentSales } from "@/components/recent-sales"
-import { Search } from "@/components/search"
-import TeamSwitcher from "@/components/team-switcher"
-import { UserNav } from "@/components/user-nav"
-
-export const metadata: Metadata = {
-    title: "Dashboard",
-    description: "Example dashboard app using the components.",
-}
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
-    return (
-        <>
-            <div className="md:hidden">
-                <Image
-                    src="/examples/dashboard-light.png"
-                    width={1280}
-                    height={866}
-                    alt="Dashboard"
-                    className="block dark:hidden"
+  const supabase = createClientComponentClient();
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [employer, setEmployer] = useState(
+    "Farrer Park Hospital"
+  );
+  const [allCurrentJobPostings, setAllCurrentJobPostings] =
+    useState<any[]>([]);
+
+  async function handleSubmit() {
+    const { error } = await supabase
+      .from("Job Listings")
+      .insert({
+        employer: "Farrer Park Hospital",
+        title: jobTitle,
+        description: jobDescription,
+        is_available: true,
+      });
+
+    await getJobPostings();
+  }
+
+  const getJobPostings = async () => {
+    const { data, error } = await supabase
+      .from("Job Listings")
+      .select();
+
+    data && setAllCurrentJobPostings(data);
+  };
+
+  useEffect(() => {
+    getJobPostings();
+  }, []);
+
+  console.log(allCurrentJobPostings);
+
+  return (
+    <div className="w-full flex items-center justify-center flex-col gap-6">
+      <Card className="w-[500px]">
+        <CardHeader>
+          <CardTitle>Create job listing</CardTitle>
+          <CardDescription>
+            Open a job listing
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="name">Job Title</Label>
+                <Input
+                  placeholder="Job Title"
+                  onChange={(e) =>
+                    setJobTitle(e.target.value)
+                  }
                 />
-                <Image
-                    src="/examples/dashboard-dark.png"
-                    width={1280}
-                    height={866}
-                    alt="Dashboard"
-                    className="hidden dark:block"
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="name">
+                  Job Description
+                </Label>
+                <textarea
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="Job Description"
+                  onChange={(e) =>
+                    setJobDescription(e.target.value)
+                  }
                 />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="name">Employer</Label>
+                <Input
+                  placeholder="Name of your project"
+                  defaultValue={employer}
+                />
+                {/* <Label htmlFor="framework">Type of role</Label>
+                <Select>
+                  <SelectTrigger id="framework">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="next">
+                      Doctor
+                    </SelectItem>
+                    <SelectItem value="sveltekit">
+                      Nurse
+                    </SelectItem>
+                    <SelectItem value="astro">
+                      Astro
+                    </SelectItem>
+                    <SelectItem value="nuxt">
+                      Nuxt.js
+                    </SelectItem>
+                  </SelectContent>
+                </Select> */}
+              </div>
             </div>
-            <div className="hidden flex-col md:flex">
-                <div className="flex-1 space-y-4 p-8 pt-6">
-                    <div className="flex items-center justify-between space-y-2">
-                        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                        <div className="flex items-center space-x-2">
-                            <CalendarDateRangePicker />
-                            <Button>Download</Button>
-                        </div>
-                    </div>
-                    <Tabs defaultValue="overview" className="space-y-4">
-                        <TabsList>
-                            <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="analytics" disabled>
-                                Analytics
-                            </TabsTrigger>
-                            <TabsTrigger value="reports" disabled>
-                                Reports
-                            </TabsTrigger>
-                            <TabsTrigger value="notifications" disabled>
-                                Notifications
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="overview" className="space-y-4">
-                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                                <Card>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">
-                                            Total Revenue
-                                        </CardTitle>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            className="h-4 w-4 text-muted-foreground"
-                                        >
-                                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                        </svg>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">$45,231.89</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            +20.1% from last month
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">
-                                            Subscriptions
-                                        </CardTitle>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            className="h-4 w-4 text-muted-foreground"
-                                        >
-                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                            <circle cx="9" cy="7" r="4" />
-                                            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                                        </svg>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">+2350</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            +180.1% from last month
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            className="h-4 w-4 text-muted-foreground"
-                                        >
-                                            <rect width="20" height="14" x="2" y="5" rx="2" />
-                                            <path d="M2 10h20" />
-                                        </svg>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">+12,234</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            +19% from last month
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">
-                                            Active Now
-                                        </CardTitle>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            className="h-4 w-4 text-muted-foreground"
-                                        >
-                                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                                        </svg>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">+573</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            +201 since last hour
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                                <Card className="col-span-4">
-                                    <CardHeader>
-                                        <CardTitle>Overview</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="pl-2">
-                                        <Overview />
-                                    </CardContent>
-                                </Card>
-                                <Card className="col-span-3">
-                                    <CardHeader>
-                                        <CardTitle>Recent Sales</CardTitle>
-                                        <CardDescription>
-                                            You made 265 sales this month.
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <RecentSales />
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </TabsContent>
-                    </Tabs>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <Button onClick={() => handleSubmit()}>
+            Publish
+          </Button>
+        </CardFooter>
+      </Card>
+      <div className="text-xl font-bold">{`Your Organisation's ${employer} Job Postings`}</div>
+      <div className="w-[500px] flex gap-4 flex-col">
+        {allCurrentJobPostings.map((data: any, index) => (
+          <div key={index} className="w-full">
+            <Card>
+              <CardHeader>
+                <CardTitle>{data.title}</CardTitle>
+                <CardDescription>
+                  {data.description}
+                </CardDescription>
+                <div className="w-max">
+                  {data.is_available ? (
+                    <Badge className="bg-green-600">
+                      Available
+                    </Badge>
+                  ) : (
+                    <Badge variant="destructive">
+                      Unavailable
+                    </Badge>
+                  )}
                 </div>
-            </div>
-        </>
-    )
+              </CardHeader>
+              {/* <CardContent></CardContent> */}
+              {/* <CardFooter>
+                <p className="text-gray-600 text-sm">
+                  {employer}
+                </p>
+              </CardFooter> */}
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
