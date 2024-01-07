@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "lib/database.types.ts"
+    "lib/database.types.ts",
+    "app/postings/[job_id]"
   ],
   "exclude": ["node_modules"]
 }

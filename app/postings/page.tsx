@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const supabase = createClientComponentClient();
@@ -26,6 +27,7 @@ export default function DashboardPage() {
   );
   const [allCurrentJobPostings, setAllCurrentJobPostings] =
     useState<any[]>([]);
+  const router = useRouter();
 
   async function handleSubmit() {
     const { error } = await supabase
@@ -123,10 +125,16 @@ export default function DashboardPage() {
           </Button>
         </CardFooter>
       </Card>
-      <div className="text-xl font-bold">{`Your Organisation's ${employer} Job Postings`}</div>
+      <div className="text-xl font-bold">{`Your Organisation's (${employer}) Job Postings`}</div>
       <div className="w-[500px] flex gap-4 flex-col">
         {allCurrentJobPostings.map((data: any, index) => (
-          <div key={index} className="w-full">
+          <div
+            key={index}
+            className="w-full cursor-pointer"
+            onClick={() =>
+              router.push(`/postings/${data.job_id}`)
+            }
+          >
             <Card>
               <CardHeader>
                 <CardTitle>{data.title}</CardTitle>

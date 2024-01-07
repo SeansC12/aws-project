@@ -71,7 +71,9 @@ export function UserNav() {
         >
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src="/avatars/01.png"
+              src={`https://ui-avatars.com/api/?name=${convertEmailToName(
+                user.email ?? ""
+              )}`}
               alt={`@${convertEmailToName(
                 user.email ?? ""
               )}`}
@@ -88,10 +90,12 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              shadcn
+              {convertEmailToName(
+                user.email ?? "Something went wrong."
+              )}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
+              {user.email ?? "Something went wrong."}
             </p>
           </div>
         </DropdownMenuLabel>
