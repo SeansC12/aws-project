@@ -57,8 +57,8 @@ export default function DashboardPage() {
   console.log(allCurrentJobPostings);
 
   return (
-    <div className="w-full flex items-center justify-center flex-col gap-6">
-      <Card className="w-[500px]">
+    <div className="w-full flex items-center justify-center flex-col gap-6 px-96">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Create job listing</CardTitle>
           <CardDescription>
@@ -126,7 +126,7 @@ export default function DashboardPage() {
         </CardFooter>
       </Card>
       <div className="text-xl font-bold">{`Your Organisation's (${employer}) Job Postings`}</div>
-      <div className="w-[500px] flex gap-4 flex-col">
+      <div className="w-full flex gap-4 flex-col">
         {allCurrentJobPostings.map((data: any, index) => (
           <div
             key={index}
