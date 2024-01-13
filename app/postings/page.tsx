@@ -95,7 +95,6 @@ export default function DashboardPage() {
                   placeholder="Name of your project"
                   defaultValue={employer}
                 />
-
                 {/* <Label htmlFor="framework">Type of role</Label>
                 <Select>
                   <SelectTrigger id="framework">

@@ -75,6 +75,21 @@ const formReducer = (state: any, action: any) => {
   }
 };
 
+function array_move(
+  arr: any,
+  old_index: any,
+  new_index: any
+) {
+  if (new_index >= arr.length) {
+    var k = new_index - arr.length + 1;
+    while (k--) {
+      arr.push(undefined);
+    }
+  }
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  return arr; // for testing
+}
+
 function page() {
   const [startingDate, setStartingDate] = useState<Date>();
   const [endingDate, setEndingDate] = useState<Date>();
@@ -103,6 +118,51 @@ function page() {
       type: "date",
       field: field,
       payload: payload,
+    });
+  };
+
+  const submit = () => {
+    const data = localStorage.getItem("allJobs");
+
+    if (data !== null) {
+      let jobs = JSON.parse(data);
+
+      if (state.experience === "NICU") {
+        const index = jobs.findIndex((e: any) =>
+          e.title.includes("Neonatal")
+        );
+        array_move(jobs, index, 0);
+      } else if (
+        state.enrolment_type === "Registered Nurse"
+      ) {
+        const index = jobs.findIndex((e: any) =>
+          e.title.includes("Registered Nurse")
+        );
+        array_move(jobs, index, 0);
+      } else if (state.specialisation === "Critical Care") {
+        const index = jobs.findIndex((e: any) =>
+          e.title.includes("Critical Care")
+        );
+        array_move(jobs, index, 0);
+      }
+
+      localStorage.setItem("allJobs", JSON.stringify(jobs));
+
+      console.log(jobs);
+    }
+
+    toast({
+      title: "Settings saved.",
+      description:
+        "Please check the homepage for your updated matching",
+      action: (
+        <ToastAction
+          altText="Goto schedule to undo"
+          onClick={() => router.push("/nurse")}
+        >
+          Home
+        </ToastAction>
+      ),
     });
   };
 
@@ -218,10 +278,10 @@ function page() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="Fully">
+                <SelectItem value="Fully Vaccinated">
                   Fully Vaccinated
                 </SelectItem>
-                <SelectItem value="Partial">
+                <SelectItem value="Partially Vaccinated">
                   Partially Vaccinated
                 </SelectItem>
               </SelectGroup>
@@ -320,25 +380,134 @@ function page() {
             </SelectContent>
           </Select>
         </div>
-        <Button
-          onClick={() => {
-            toast({
-              title: "Settings saved.",
-              description:
-                "Please check the homepage for your updated matching",
-              action: (
-                <ToastAction
-                  altText="Goto schedule to undo"
-                  onClick={() => router.push("/nurse")}
-                >
-                  Home
-                </ToastAction>
-              ),
-            });
-          }}
-        >
-          Submit
-        </Button>
+        {/* <div>
+          <Label>Frequency (times a week)</Label>
+          <Input
+            placeholder="6"
+            onChange={(e) =>
+              handleTextChange("frequency", e.target.value)
+            }
+            defaultValue={initialFormState.frequency}
+          />
+        </div>
+        <div>
+          <Label>IPS or ICU</Label>
+          <Select
+            onValueChange={(e) =>
+              handleTextChange("ips_or_icu", e)
+            }
+            defaultValue={initialFormState.ips_or_icu}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select IPS or ICU" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="IPS">IPS</SelectItem>
+                <SelectItem value="ICU">ICU</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Starting Date</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !startingDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {startingDate ? (
+                  format(startingDate, "PPP")
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={startingDate}
+                onSelect={setStartingDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
+          <Label>Ending Date</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !endingDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {endingDate ? (
+                  format(endingDate, "PPP")
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={endingDate}
+                onSelect={setEndingDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
+          <Label>Department</Label>
+          <Input
+            placeholder="IPS 7"
+            onChange={(e) =>
+              handleTextChange("department", e.target.value)
+            }
+            defaultValue={initialFormState.department}
+          />
+        </div>
+        <div>
+          <Label>Supervisor</Label>
+          <Input
+            placeholder="John"
+            onChange={(e) =>
+              handleTextChange("supervisor", e.target.value)
+            }
+            defaultValue={initialFormState.supervisor}
+          />
+        </div>
+        <div>
+          <Label>Rating (out of 5)</Label>
+          <Input
+            placeholder="5"
+            onChange={(e) =>
+              handleTextChange("rating", e.target.value)
+            }
+            defaultValue={initialFormState.rating}
+          />
+        </div>
+        <div>
+          <Label>Comments</Label>
+          <Textarea
+            placeholder="Type your comments here."
+            onChange={(e) =>
+              handleTextChange("comments", e.target.value)
+            }
+            defaultValue={initialFormState.comments}
+          />
+        </div> */}
+        <Button onClick={submit}>Submit</Button>
       </div>
     </div>
   );
